@@ -1,5 +1,8 @@
 # Plantilla arquitectura hexagonal web api
 
+[jairgrcTemplate2.Utility.Templates](https://www.nuget.org/packages/jairgrcTemplate2.Utility.Templates/1.2.3)
+
+
 ## Install the template
 
 ```
