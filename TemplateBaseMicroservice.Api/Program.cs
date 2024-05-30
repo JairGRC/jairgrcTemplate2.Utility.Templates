@@ -6,7 +6,7 @@ ConfigureServices(builder.Services);
 var app = builder.Build();
 Configure(app, app.Environment);
 app.Run();
-
+ 
 void ConfigureServices(IServiceCollection services)
 {
     TrackerConfig._configuration = builder.Configuration;

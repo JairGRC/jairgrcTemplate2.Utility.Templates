@@ -9,6 +9,7 @@ namespace TemplateBaseMicroservice.Entities
     public class EResponse
     {
         public string cDescripcion { get; set; }
+        //public T cValores { get; set; }
         public string? Info { get; set; }
  
     }
