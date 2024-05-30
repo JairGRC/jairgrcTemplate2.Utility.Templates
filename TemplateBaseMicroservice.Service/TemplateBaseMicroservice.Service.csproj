@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TemplateBaseMicroservice.Domain\TemplateBaseMicroservice.Domain.csproj" />
+    <ProjectReference Include="..\TemplateBaseMicroservice.Entities\TemplateBaseMicroservice.Entities.csproj" />
+    <ProjectReference Include="..\TemplateBaseMicroservice.Exceptions\TemplateBaseMicroservice.Exceptions.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
