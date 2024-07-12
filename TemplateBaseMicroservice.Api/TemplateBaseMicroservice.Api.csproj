@@ -14,8 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
@@ -23,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TemplateBaseMicroservice.Domain\TemplateBaseMicroservice.Domain.csproj" />
     <ProjectReference Include="..\TemplateBaseMicroservice.Entities\TemplateBaseMicroservice.Entities.csproj" />
     <ProjectReference Include="..\TemplateBaseMicroservice.Infraestructure\TemplateBaseMicroservice.Infraestructure.csproj" />
-    <ProjectReference Include="..\TemplateBaseMicroservice.Service\TemplateBaseMicroservice.Service.csproj" />
     <ProjectReference Include="..\Util\Util.csproj" />
   </ItemGroup>
 

@@ -1,19 +1,10 @@
-﻿using TemplateBaseMicroservice.Entities;
+﻿using System.Transactions;
+using TemplateBaseMicroservice.Entities;
 using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities.Model;
-using TemplateBaseMicroservice.Entities.Request;
 using TemplateBaseMicroservice.Entities.Response;
 using TemplateBaseMicroservice.Exceptions;
 using TemplateBaseMicroservice.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Composition;
-using System.Transactions;
-using Util;
 namespace TemplateBaseMicroservice.Domain
 {
     public class EjemploDomain
@@ -30,11 +21,11 @@ namespace TemplateBaseMicroservice.Domain
         }
         #endregion
         #region Method Publics 
-        public async Task<EjemploItemResponse> CreateEjemplo(EjemploEntity Ejemplo)
+        public async Task<EjemploItemResponse> CreateEjemplo(EjemploCreateDto Ejemplo)
         {
             EjemploItemResponse item = new EjemploItemResponse() { Item = false };
             using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-            long id = await _EjemploRepository.Insert(Ejemplo);
+            long id = await _EjemploRepository.Insert(new EjemploEntity().ConvertToEjemploCreate(Ejemplo));
             if (id == 0)
             {
                 throw new EjemploAddHeaderException();
@@ -44,12 +35,12 @@ namespace TemplateBaseMicroservice.Domain
             return item;
 
         }
-        public async Task<EjemploItemResponse> EditEjemplo(EjemploUpdateDto Ejemplo)
+        public async Task<EjemploItemResponse> EditEjemplo(EjemploEntity Ejemplo)
         {
             EjemploItemResponse item = new EjemploItemResponse() { Item = false };
-            
+
             using var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-            if (!await _EjemploRepository.Update(new EjemploEntity().ConvertToEjemploUpdate(Ejemplo)))
+            if (!await _EjemploRepository.Update(Ejemplo))
             {
                 throw new EjemploEditHeaderException();
             }
@@ -71,10 +62,10 @@ namespace TemplateBaseMicroservice.Domain
             return Ejemplo;
         }
 
-        public async Task<EjemploItemResponse> GetByList(EjemploFilter filter, EjemploFilterItemType filterType, Pagination pagination)
+        public async Task<EjemploLstItemResponse> GetByList(EjemploFilter filter, EjemploFilterListType filterType, Pagination pagination)
         {
-            EjemploItemResponse lst = new EjemploItemResponse();
-            lst.Item = await _EjemploRepository.GetLstItem(filter, filterType, pagination);
+            EjemploLstItemResponse lst = new EjemploLstItemResponse();
+            lst.LstItem = await _EjemploRepository.GetLstItem(filter, filterType, pagination);
             return lst;
         }
         #endregion

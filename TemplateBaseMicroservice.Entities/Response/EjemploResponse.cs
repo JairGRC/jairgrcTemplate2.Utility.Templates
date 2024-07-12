@@ -1,10 +1,4 @@
-﻿using TemplateBaseMicroservice.Entities.Request;
-using TemplateBaseMicroservice.Entities.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TemplateBaseMicroservice.Entities.Model;
 
 namespace TemplateBaseMicroservice.Entities.Response
 {
@@ -14,7 +8,7 @@ namespace TemplateBaseMicroservice.Entities.Response
     public class EjemploItemResponse : ItemResponse<object>
     {
     }
-    //public class EjemploLstItemResponse : LstItemResponse<EjemploEntity>
-    //{
-    //}
+    public class EjemploLstItemResponse : LstItemResponse<EjemploEntity>
+    {
+    }
 }

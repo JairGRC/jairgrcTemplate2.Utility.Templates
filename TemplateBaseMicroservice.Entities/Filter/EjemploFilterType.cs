@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TemplateBaseMicroservice.Entities.Filter
+﻿namespace TemplateBaseMicroservice.Entities.Filter
 {
     public enum EjemploFilterItemType : byte
     {
@@ -13,7 +7,6 @@ namespace TemplateBaseMicroservice.Entities.Filter
         Update,
         Delete,
         ItemEjemplo,
-        ListItemEjemplo,
         ByItemxID,
         Undefined,
         BycPerCodigo
@@ -22,6 +15,7 @@ namespace TemplateBaseMicroservice.Entities.Filter
     {
         Undefined,
         ByList,
+        ListItemEjemplo,
         ByPagination,
         ByCabecera,
         ByDependencia

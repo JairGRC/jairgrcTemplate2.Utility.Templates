@@ -1,14 +1,8 @@
 ﻿using Dapper;
-using System.Composition;
 using TemplateBaseMicroservice.Entities;
 using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities.Model;
 using TemplateBaseMicroservice.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TemplateBaseMicroservice.Infraestructure
 {
@@ -22,43 +16,30 @@ namespace TemplateBaseMicroservice.Infraestructure
         #endregion
         #region Public Methods
         public async Task<long> Insert(EjemploEntity item)
-        {
-            using var conex = this._connectionFactory.GetConnection();
-            var query = "InsertarRegistro";
-            var param = new DynamicParameters();
-            param.Add("@Nombre", item.Nombre);
-            param.Add("@Edad", item.Edad);
-            param.Add("@Email", item.Email);
-            long id = (long)await SqlMapper.ExecuteAsync(conex, query, param, commandType: System.Data.CommandType.StoredProcedure);
-            return id;
-        }
-        public async Task<bool> Update(EjemploEntity item)
-        {
+         => await this.Create("InsertarRegistro", new DynamicParameters(new Dictionary<string, object>
+         {
+             { "@Nombre", item.Nombre},
+             { "@Edad", item.Edad},
+             { "@Email", item.Email},
+         }));
+        public async Task<bool> Update(EjemploEntity item) =>
+            await this.UpdateOrDelete("ActualizarRegistro", new DynamicParameters(new Dictionary<string, object>
+            {
+                {"@ID", item.ID },
+                {"@Nombre",item.Nombre},
+                {"@Edad",item.Edad },
+                {"@Email",item.Email}
+            }));
+        public async Task<bool> Delete(long id) =>
+            await this.UpdateOrDelete("EliminarRegistro", new DynamicParameters(new Dictionary<string, object>
+            {
+                { "@ID",id }
+            }));
 
-            using var conex = this._connectionFactory.GetConnection();
-            var query = "ActualizarRegistro";
-            var param = new DynamicParameters();
-            param.Add("@ID", item.ID);
-            param.Add("@Nombre", item.Nombre);
-            param.Add("@Edad", item.Edad);
-            param.Add("@Email", item.Email);
-            return (int)await SqlMapper.ExecuteAsync(conex, query, param, commandType: System.Data.CommandType.StoredProcedure) > 0;
-
-        }
-        public async Task<bool> Delete(long id)
-        {
-            using var conex = this._connectionFactory.GetConnection();
-            var query = "EliminarRegistro";
-            var param = new DynamicParameters();
-            param.Add("@ID", id);
-            return (int) await SqlMapper.ExecuteAsync(conex, query, param, commandType: System.Data.CommandType.StoredProcedure) > 0;
-        }
 
         public async Task<bool> Delete(string id)
         {
-
             throw new NotImplementedException();
-
         }
         public async Task<EjemploEntity> GetItem(EjemploFilter filter, EjemploFilterItemType filterType)
         {
@@ -71,12 +52,12 @@ namespace TemplateBaseMicroservice.Infraestructure
             }
             return itemfound;
         }
-        public async Task<IEnumerable<EjemploEntity>> GetLstItem(EjemploFilter filter, EjemploFilterItemType filterType, Pagination pagination)
+        public async Task<IEnumerable<EjemploEntity>> GetLstItem(EjemploFilter filter, EjemploFilterListType filterType, Pagination pagination)
         {
             IEnumerable<EjemploEntity> lstItemFound = new List<EjemploEntity>();
             switch (filterType)
             {
-                case EjemploFilterItemType.ListItemEjemplo:
+                case EjemploFilterListType.ListItemEjemplo:
                     lstItemFound = await this.getByList();
                     break;
                 default:
@@ -86,27 +67,15 @@ namespace TemplateBaseMicroservice.Infraestructure
         }
         #endregion
         #region Private Methods
-        private async Task<EjemploEntity> obtenerEjemploxID(EjemploFilter filter)
-        {
-            EjemploEntity itemfound = null;
-            var conex = this._connectionFactory.GetConnection();
-            var query = "ObtenerRegistroPorID";
-            var param = new DynamicParameters();
-            param.Add("@ID", filter.ID);
-            itemfound = await SqlMapper.QueryFirstOrDefaultAsync<EjemploEntity>(conex, query, param, commandType: System.Data.CommandType.StoredProcedure);
-            return itemfound;
+        private async Task<EjemploEntity?> obtenerEjemploxID(EjemploFilter filter)
+            => (await this.LoadData<EjemploEntity>("ObtenerRegistroPorID", new DynamicParameters(new Dictionary<string, object>
+            {
+                { "@ID", filter.ID}
+            }))).FirstOrDefault() ?? null;
 
-        }
-        private async Task<IEnumerable<EjemploEntity>> getByList()
-        {
-            var conex = this._connectionFactory.GetConnection();
-            IEnumerable<EjemploEntity> lstfound = new List<EjemploEntity>();
-            var query = "ObtenerRegistros";
-            var param = new DynamicParameters();
-            lstfound = await SqlMapper.QueryAsync<EjemploEntity>(conex, query, param,
-                commandType: System.Data.CommandType.StoredProcedure);
-            return lstfound;
-        }
+        private async Task<IEnumerable<EjemploEntity>> getByList() =>
+            await this.LoadData<EjemploEntity>("ObtenerRegistros", new DynamicParameters());
+
         #endregion
     }
 }

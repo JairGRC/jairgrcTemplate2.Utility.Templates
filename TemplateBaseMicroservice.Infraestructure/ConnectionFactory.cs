@@ -1,9 +1,6 @@
-using TemplateBaseMicroservice.Repository;
 using Microsoft.Data.SqlClient;
-using System.Composition;
 using System.Data;
-using System.Data.Common;
-using Util;
+using TemplateBaseMicroservice.Repository;
 namespace TemplateBaseMicroservice.Infraestructure
 {
     public class ConnectionFactory : IConnectionFactory
@@ -15,20 +12,17 @@ namespace TemplateBaseMicroservice.Infraestructure
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
-        public IDbConnection GetConnection()
+        public IDbConnection GetConnection(string connectionId = "Default")
         {
-            lock (_lock)
+            string ccDb = connectionId switch
             {
-                _connection = new SqlConnection(_connectionString);
-                _connection.Open();
-                // Esperar hasta que la conexión esté completamente abierta
-                while (_connection.State is not ConnectionState.Open)
-                {
-                    // Esperar un corto período de tiempo antes de volver a verificar
-                    System.Threading.Thread.Sleep(100);
-                }
-                return _connection;
-            }
+                "Default" => _connectionString,
+                _ => throw new ArgumentNullException(_connectionString),
+            };
+            _connection = new SqlConnection(ccDb);
+            _connection.Open();
+            return _connection;
+
         }
     }
 }

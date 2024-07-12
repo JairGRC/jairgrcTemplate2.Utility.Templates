@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities.Model;
 
@@ -22,7 +17,7 @@ namespace TemplateBaseMicroservice.Entities.FilterValidator
             RuleFor(x => x.Edad)
           .GreaterThan(0).WithMessage("La edad debe ser mayor que cero");
         }
-    } 
+    }
     public class EjemploCreateDtoValidator : AbstractValidator<EjemploCreateDto>
     {
         public EjemploCreateDtoValidator()

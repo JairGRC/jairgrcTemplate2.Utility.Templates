@@ -1,7 +1,7 @@
 using Moq;
 using TemplateBaseMicroservice.Domain;
-using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities;
+using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities.Model;
 using TemplateBaseMicroservice.Exceptions;
 using TemplateBaseMicroservice.Repository;
@@ -22,29 +22,50 @@ namespace TemplateBaseTest
         [Fact]
         public async Task Get_ReturnsOkResult_WhenServiceReturnsSuccess()
         {
-            //Arrange
-            var ejemplo = new EjemploEntity();
-            // Simulamos que la respuesta del repoInsert es 1 
-            _mockRepo.Setup(repo => repo.Insert(ejemplo)).ReturnsAsync(1);
+            EjemploCreateDto? ejemplo = new EjemploCreateDto
+            {
+                Nombre = "Nombre de ejemplo",
+                Edad = 25,
+                Email = "ejemplo@correo.com"
+            };
+
+            EjemploEntity? ejemploEntity = new EjemploEntity().ConvertToEjemploCreate(ejemplo);
+
+            // Configuración del mock del repositorio
+            _mockRepo.Setup(repo => repo.Insert(It.Is<EjemploEntity>(e =>
+                e.Nombre == ejemploEntity.Nombre &&
+                e.Edad == ejemploEntity.Edad &&
+                e.Email == ejemploEntity.Email
+            ))).ReturnsAsync(1);
 
             // Act
             var result = await _domain.CreateEjemplo(ejemplo);
 
             // Assert
             Assert.True((bool)result.Item);
-            _mockRepo.Verify(repo => repo.Insert(ejemplo), Times.Once);
+            _mockRepo.Verify(repo => repo.Insert(It.Is<EjemploEntity>(e =>
+                e.Nombre == ejemploEntity.Nombre &&
+                e.Edad == ejemploEntity.Edad &&
+                e.Email == ejemploEntity.Email
+            )), Times.Once);
         }
         [Fact]
         public async Task EditEjemplo_ShouldReturnSuccess_WhenUpdateIsSuccessful()
         {
             // Arrange
-            var ejemplo = new EjemploEntity();
-            var ejemploUpdate = new EjemploUpdateDto("Jair",25,"jair@gmail.com");
+
+            var ejemploUpdate = new EjemploUpdateDto()
+            {
+                Nombre = "Jair",
+                Edad = 25,
+                Email = "jair@gmail.com"
+            };
+            var ejemplo = new EjemploEntity().ConvertToEjemploUpdate(ejemploUpdate);
             // Simulamos que la respuesta del repoUpdate es true 
             _mockRepo.Setup(repo => repo.Update(It.IsAny<EjemploEntity>())).ReturnsAsync(true);
 
             // Act
-            var result = await _domain.EditEjemplo(ejemploUpdate);
+            var result = await _domain.EditEjemplo(ejemplo);
 
             // Assert
             Assert.True((bool)result.Item);
@@ -56,13 +77,18 @@ namespace TemplateBaseTest
         public async Task EditEjemplo_ShouldThrowException_WhenUpdateFails()
         {
             // Arrange
-            var ejemplo = new EjemploEntity();
-            var ejemploUpdate = new EjemploUpdateDto("Jair", 25, "jair@gmail.com");
+            var ejemploUpdate = new EjemploUpdateDto()
+            {
+                Nombre = "Jair",
+                Edad = 25,
+                Email = "jair@gmail.com"
+            };
+            var ejemplo = new EjemploEntity().ConvertToEjemploUpdate(ejemploUpdate);
             // Simulamos que la respuesta del repoUpdate es false y que sucede un error
             _mockRepo.Setup(repo => repo.Update(It.IsAny<EjemploEntity>())).ReturnsAsync(false);
 
             // Act & Assert
-            await Assert.ThrowsAsync<EjemploEditHeaderException>(() => _domain.EditEjemplo(ejemploUpdate));
+            await Assert.ThrowsAsync<EjemploEditHeaderException>(() => _domain.EditEjemplo(ejemplo));
             _mockRepo.Verify(repo => repo.Update(It.IsAny<EjemploEntity>()), Times.Once);
         }
 
@@ -105,14 +131,14 @@ namespace TemplateBaseTest
             var filter = new EjemploFilter(1);
             var pagination = new Pagination();
             var ejemploEntities = new List<EjemploEntity> { new EjemploEntity() };
-            _mockRepo.Setup(repo => repo.GetLstItem(filter, EjemploFilterItemType.ListItemEjemplo, pagination)).ReturnsAsync(ejemploEntities);
+            _mockRepo.Setup(repo => repo.GetLstItem(filter, EjemploFilterListType.ListItemEjemplo, pagination)).ReturnsAsync(ejemploEntities);
 
             // Act
-            var result = await _domain.GetByList(filter, EjemploFilterItemType.ListItemEjemplo, pagination);
+            var result = await _domain.GetByList(filter, EjemploFilterListType.ListItemEjemplo, pagination);
 
             // Assert
-            Assert.Equal(ejemploEntities, result.Item);
-            _mockRepo.Verify(repo => repo.GetLstItem(filter, EjemploFilterItemType.ListItemEjemplo, pagination), Times.Once);
+            Assert.Equal(ejemploEntities, result.LstItem);
+            _mockRepo.Verify(repo => repo.GetLstItem(filter, EjemploFilterListType.ListItemEjemplo, pagination), Times.Once);
         }
     }
 }

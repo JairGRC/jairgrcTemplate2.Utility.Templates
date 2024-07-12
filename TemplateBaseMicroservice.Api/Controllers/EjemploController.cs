@@ -1,109 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using TemplateBaseMicroservice.Domain;
 using TemplateBaseMicroservice.Entities.Filter;
+using TemplateBaseMicroservice.Entities.FilterValidator;
 using TemplateBaseMicroservice.Entities.Model;
-using TemplateBaseMicroservice.Entities.Request;
-using TemplateBaseMicroservice.Entities.Response;
-using TemplateBaseMicroservice.Service;
+using TemplateBaseMicroservice.Exceptions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TemplateBaseMicroservice.Api.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class EjemploController(EjemploService _service) : ControllerBase
+    public class EjemploController(EjemploDomain _domain) : ControllerBase
     {
         // GET: api/<EjemploController>
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
-            EjemploItemRequest request = new EjemploItemRequest()
-            {
-                FilterType = EjemploFilterItemType.ListItemEjemplo,
-              
-            };
-            EjemploItemResponse response = new EjemploItemResponse();
-            response = await _service.GetEjemplo(response, request);
-            if (!response.IsSuccess)
-                return BadRequest(response);
-            return Ok(response);
-        }
+            => Ok(await _domain.GetByList(null, EjemploFilterListType.ListItemEjemplo, null));
+
 
         // GET api/<EjemploController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
-        {
-            EjemploItemRequest request = new EjemploItemRequest()
-            {
-                FilterType = EjemploFilterItemType.ByItemxID,
-                Filter = new EjemploFilter(id)
-                
-            };
-            EjemploItemResponse response = new EjemploItemResponse();
-            response = await _service.GetEjemplo(response, request);
-            if (!response.IsSuccess)
-                return BadRequest(response);
-            return Ok(response);
-        }
+            => Ok(await _domain.GetByItem(new EjemploFilter(id), EjemploFilterItemType.ByItemxID));
 
         // POST api/<EjemploController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] EjemploCreateDto entidad)
         {
-            EjemploItemRequest request = new EjemploItemRequest()
-            {
-                FilterType = EjemploFilterItemType.Add,
-                ejemploCreate = entidad
-            };
-            EjemploItemResponse response = new EjemploItemResponse();
-            response.ValidarCrearEjemplo(request);
-            response = await _service.GetEjemplo(response, request);
-            if (!response.IsSuccess)
-                return BadRequest(response);
-            return Ok(response);
+            // Crear instancia del validador específico para EjemploCreateDto
+            var validator = new EjemploCreateDtoValidator();
+            // Validar el modelo y obtener los errores
+            FluentValidatorExceptions.ValidateModel(entidad, validator);
+            return Ok(await _domain.CreateEjemplo(entidad));
         }
 
         // PUT api/<EjemploController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] EjemploUpdateDto value)
         {
-            EjemploItemRequest request = new EjemploItemRequest()
+            EjemploEntity ejemplo = new EjemploEntity()
             {
-                FilterType = EjemploFilterItemType.Edit,
-                ejemplo = new EjemploEntity()
-                {
-                    ID = id,
-                    Edad = value.Edad,
-                    Email = value.Email,
-                    Nombre = value.Nombre
-                }
+                ID = id,
+                Edad = value.Edad,
+                Email = value.Email,
+                Nombre = value.Nombre
             };
-            EjemploItemResponse response = new EjemploItemResponse();
-            response.ValidarUpdateEjemplo(request);
-            response = await _service.GetEjemplo(response, request);
-            if (!response.IsSuccess)
-                return BadRequest(response);
-            return Ok(response);
+            EjemploUpdateDtoValidator? validator = new EjemploUpdateDtoValidator();
+            FluentValidatorExceptions.ValidateModel(ejemplo, validator);
+
+            return Ok(await _domain.EditEjemplo(ejemplo));
         }
 
-        // DELETE api/<EjemploController>/5
+        //// DELETE api/<EjemploController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
-        {
-            EjemploItemRequest request = new EjemploItemRequest()
-            {
-                FilterType = EjemploFilterItemType.Delete,
-                ejemplo = new EjemploEntity()
-                {
-                    ID = id,
-                }
-            };
-            EjemploItemResponse response = new EjemploItemResponse();
-            response = await _service.GetEjemplo(response, request);
-            if (!response.IsSuccess)
-                return BadRequest(response);
-            return Ok(response);
-        }
+            => Ok(await _domain.DeleteEjemplo(new EjemploEntity() { ID = id }));
     }
 }

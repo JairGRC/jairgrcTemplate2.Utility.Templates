@@ -1,18 +1,12 @@
-﻿using AutoMapper;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using System.Text.Json;
-using System.Xml;
 using TemplateBaseMicroservice.Entities;
-using TemplateBaseMicroservice.Entities.Filter;
+using TemplateBaseMicroservice.Exceptions;
 using TemplateBaseMicroservice.Infraestructure;
 using TemplateBaseMicroservice.Repository;
-using Util;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TemplateBaseMicroservice.Api.Extensions
 {
@@ -25,8 +19,6 @@ namespace TemplateBaseMicroservice.Api.Extensions
         }
         public static IServiceCollection InyeccionDeDepenciasClases(this IServiceCollection services)
         {
-            
-           
             var executableLocation = Assembly.GetEntryAssembly().Location;
             var pathAssembly = Path.GetDirectoryName(executableLocation);
             var allTypesDll = Directory.GetFiles(pathAssembly, "TemplateBase*.dll", SearchOption.TopDirectoryOnly)
@@ -37,7 +29,7 @@ namespace TemplateBaseMicroservice.Api.Extensions
              .ToList();
 
             var allTypeExported = allTypesDll
-            .SelectMany(assembly => assembly.GetExportedTypes().Where(t=> !t.IsAbstract && !t.IsGenericType && typeof(IValidator).IsAssignableFrom(t)))
+            .SelectMany(assembly => assembly.GetExportedTypes().Where(t => !t.IsAbstract && !t.IsGenericType && typeof(IValidator).IsAssignableFrom(t)))
             .ToList();
 
             allTypeExported.ForEach(validorType =>
@@ -48,7 +40,6 @@ namespace TemplateBaseMicroservice.Api.Extensions
                     services.AddTransient(typeof(IValidator<>).MakeGenericType(entityType), validorType);
                 }
             });
-
 
             allTypes.Where(type => type.Name.Contains("Repository"))
                 .ToList().ForEach(repo =>
@@ -66,28 +57,16 @@ namespace TemplateBaseMicroservice.Api.Extensions
                     }
                 });
 
-            allTypes.Where(type => type.Name.EndsWith("Service"))
-                .ToList().ForEach(serviceType =>
-                {
-                    services.AddScoped(serviceType);
-                });
-
             allTypes.Where(type => type.Name.EndsWith("Domain"))
                 .ToList().ForEach(domainType =>
                 {
                     services.AddScoped(domainType);
                 });
 
-           
             return services;
         }
         public static IServiceCollection InyeccionControllers(this IServiceCollection services)
         {
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -95,26 +74,55 @@ namespace TemplateBaseMicroservice.Api.Extensions
                        .AllowAnyHeader();
             }));
 
-            services.AddControllers();
-
+            ValidacionFiltros(services);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TemplateBase Microservice.Api", Version = "v1" });
-               
+
             });
 
             return services;
         }
+        private static void ValidacionFiltros(this IServiceCollection services)
+        {
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<CustomExceptionFilter>();
+            }).
+                ConfigureApiBehaviorOptions(options =>
+                {
+                    var builtInFactory = options.InvalidModelStateResponseFactory;
+
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        BadRequestResponse badResponse = new BadRequestResponse();
+                        var logger = context.HttpContext.RequestServices
+                                            .GetRequiredService<ILogger<Program>>();
+
+                        var modelo = context.ModelState;
+                        var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                        var parameter = actionDescriptor?.Parameters.FirstOrDefault(p => p.BindingInfo.BindingSource.Id.Equals("Body", StringComparison.OrdinalIgnoreCase));
+
+                        if (!modelo.IsValid)
+                        {
+                            var errors = modelo.Keys
+                            .SelectMany(key => modelo[key].Errors.Select(x => new EResponse
+                            {
+                                cDescripcion = $"El campo '{key}' de la entidad no es válido. Error: {x.ErrorMessage}",
+                                Info = "Ingrese un valor válido para seguir con la solicitud"
+                            })).ToList();
+
+                            badResponse.LstError.AddRange(errors);
+                            return new BadRequestObjectResult(badResponse);
+                        }
+                        return builtInFactory(context);
+                    };
+                });
+
+        }
         public static IServiceCollection InyeccionOtrosServicios(this IServiceCollection services)
         {
 
-            //var mapperConfig = new MapperConfiguration(mc =>
-            //{
-            //    mc.AddProfile(new AutoMapperProfile());
-            //});
-            //IMapper mapper = mapperConfig.CreateMapper();
-            //services.AddSingleton(mapper);
-            //TrackerConfig._mapper = mapper;
             return services;
         }
     }

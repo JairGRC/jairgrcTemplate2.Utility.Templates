@@ -6,57 +6,70 @@
 ## Install the template
 
 ```
-dotnet new install jairgrcTemplate2.Utility.Templates::1.2.1
+dotnet new install jairgrcTemplate2.Utility.Templates::1.2.7
 dotnet new JGRCV2 -o <tagPlantilla>
 ```
 ### Project structure
 
 ```
-└── 📁Plantilla
-    └── Generador.rar
-    └── LICENSE
-    └── README.md
     └── TemplateBase.sln
     └── 📁TemplateBaseMicroservice.Api
         └── appsettings.Development.json
         └── appsettings.json
+        └── 📁Controllers
+            └── EjemploController.cs
+        └── 📁Extensions
+            └── ApplicationBuilderExtensions.cs
+            └── ServiceCollectionExtensions.cs
         └── Program.cs
-        └── 📁Properties
-            └── launchSettings.json
-        └── Startup.cs
         └── TemplateBaseMicroservice.Api.csproj
         └── TemplateBaseMicroservice.Api.csproj.user
         └── TemplateBaseMicroservice.Api.http
     └── 📁TemplateBaseMicroservice.Domain
-    
+        └── EjemploDomain.cs
+        └── TemplateBaseMicroservice.Domain.csproj
     └── 📁TemplateBaseMicroservice.Entities
         └── 📁Enums
+            └── .empty
         └── 📁Filter
+            └── .empty
+            └── EjemploFilter.cs
+            └── EjemploFilterType.cs
+        └── 📁FilterValidator
+            └── EjemploFilterValidator.cs
         └── 📁Model
+            └── .empty
+            └── EjemploEntity.cs
         └── 📁Request
             └── BaseRequest.cs
+            └── EjemploRequest.cs
         └── 📁Response
             └── BaseResponse.cs
+            └── EjemploResponse.cs
         └── TemplateBaseMicroservice.Entities.csproj
     └── 📁TemplateBaseMicroservice.Exceptions
         └── CustomException.cs
+        └── EjemploHeaderException.cs
+        └── FluentValidatorExceptions.cs
         └── TemplateBaseMicroservice.Exceptions.csproj
     └── 📁TemplateBaseMicroservice.Infraestructure
         └── BaseRepository.cs
         └── ConnectionFactory.cs
+        └── EjemploRepository.cs
         └── TemplateBaseMicroservice.Infraestructure.csproj
     └── 📁TemplateBaseMicroservice.Repository
         └── IConnectionFactory.cs
+        └── IEjemploRepository.cs
         └── IGenericRepository.cs
         └── TemplateBaseMicroservice.Repository.csproj
-    └── 📁TemplateBaseMicroservice.Service
-        └── TemplateBaseMicroservice.Service.csproj
+    └── 📁TemplateBaseTest
+        └── EjemploDomainTest.cs
+        └── TemplateBaseTest.csproj
     └── 📁Util
-        └── 📁AutoMapper
-            └── AutoMapper.cs
         └── TrackerConfig.cs
         └── Util.csproj
 ```
+
 # Package Versions Used
 
 ## Core Packages

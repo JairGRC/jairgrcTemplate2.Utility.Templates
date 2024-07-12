@@ -1,36 +1,25 @@
-﻿using Util;
-
-namespace TemplateBaseMicroservice.Api.Extensions
+﻿namespace TemplateBaseMicroservice.Api.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
+        private static void ConfigureSwagger(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                var endpointUrl = env.IsDevelopment() ? "/swagger/v1/swagger.json" : "/TemplateBase/swagger/v1/swagger.json";
+                c.SwaggerEndpoint(endpointUrl, "UCV.TemplateBase API V1");
+            });
+        }
         public static void UseCustomConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
+
             app.UseHttpsRedirection();
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", $"UCV.TemplateBase API V1");
-                });
-            }
-            else
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint($"/TemplateBase/swagger/v1/swagger.json", $"UCV.TemplateBase API V1");
-                });
-            }
+            ConfigureSwagger(app, env);
 
             app.UseCors("MyPolicy");
             app.UseRouting();
             app.UseAuthorization();
-            
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -40,6 +29,8 @@ namespace TemplateBaseMicroservice.Api.Extensions
             {
                 await context.Response.WriteAsync($"Microservice TemplateBase is running .... ");
             });
+
+
         }
     }
 }

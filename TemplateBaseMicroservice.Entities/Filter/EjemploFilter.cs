@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TemplateBaseMicroservice.Entities.Filter
+﻿namespace TemplateBaseMicroservice.Entities.Filter
 {
     public record class EjemploFilter(int ID);
-    public record class EjemploCreateDto(
-           string Nombre,
-           int Edad,
-           string Email
-    );
-    public record class EjemploUpdateDto(
-            string Nombre,
-            int Edad,
-            string Email
-    );
+    public record class EjemploCreateDto
+    {
+        public string Nombre { get; init; }
+        public int Edad { get; init; }
+        public string Email { get; init; }
+    };
+    public record class EjemploUpdateDto
+    {
+        public string Nombre { get; init; }
+        public int Edad { get; init; }
+        public string Email { get; init; }
+    }
+
+
 
 }
