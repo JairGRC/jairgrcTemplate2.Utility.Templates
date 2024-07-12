@@ -9,8 +9,8 @@
 dotnet new install jairgrcTemplate2.Utility.Templates::1.2.7
 dotnet new JGRCV2 -o <tagPlantilla>
 ```
-### Project structure
 
+### Project structure
 ```
     └── TemplateBase.sln
     └── 📁TemplateBaseMicroservice.Api
@@ -22,10 +22,12 @@ dotnet new JGRCV2 -o <tagPlantilla>
             └── ApplicationBuilderExtensions.cs
             └── ServiceCollectionExtensions.cs
         └── Program.cs
+        └── Startup.cs
+        └── Startup.cs
         └── TemplateBaseMicroservice.Api.csproj
         └── TemplateBaseMicroservice.Api.csproj.user
-        └── TemplateBaseMicroservice.Api.http
-    └── 📁TemplateBaseMicroservice.Domain
+        └── EjemploDomain.cs
+        └── TemplateBaseMicroservice.Domain.csproj
         └── EjemploDomain.cs
         └── TemplateBaseMicroservice.Domain.csproj
     └── 📁TemplateBaseMicroservice.Entities
@@ -62,6 +64,9 @@ dotnet new JGRCV2 -o <tagPlantilla>
         └── IEjemploRepository.cs
         └── IGenericRepository.cs
         └── TemplateBaseMicroservice.Repository.csproj
+    └── 📁TemplateBaseTest
+        └── EjemploDomainTest.cs
+        └── TemplateBaseTest.csproj
     └── 📁TemplateBaseTest
         └── EjemploDomainTest.cs
         └── TemplateBaseTest.csproj
