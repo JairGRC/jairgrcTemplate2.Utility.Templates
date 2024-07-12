@@ -1,21 +1,10 @@
-using  TemplateBaseMicroservice.Api;
+
 using TemplateBaseMicroservice.Api.Extensions;
-using Util;
 var builder = WebApplication.CreateBuilder(args);
-ConfigureServices(builder.Services);
+builder.Services.InyeccionDeBD(builder.Configuration)
+                .InyeccionDeDepenciasClases()
+                .InyeccionControllers();
+
 var app = builder.Build();
-Configure(app, app.Environment);
+app.UseCustomConfiguration(app.Environment);
 app.Run();
- 
-void ConfigureServices(IServiceCollection services)
-{
-    TrackerConfig._configuration = builder.Configuration;
-    services.InyeccionDeBD(builder.Configuration);
-    services.InyeccionDeDepenciasClases();
-    services.InyeccionControllers();
-    //services.InyeccionOtrosServicios();
-}
-void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-{
-    app.UseCustomConfiguration(env);
-}
