@@ -1,6 +1,36 @@
-@TemplateBaseMicroservice.Api_HostAddress = http://localhost:5286
+@Api_HostAddress = https://localhost:44362
+###  EJEMPLO
 
-GET {{TemplateBaseMicroservice.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{Api_HostAddress}}/api/ejemplo
+
+###
+
+POST {{Api_HostAddress}}/api/ejemplo
+Content-Type: application/json
+
+{
+  "nombre": "string",
+  "edad": 0,
+  "email": "string"
+}
+
+###
+
+GET {{Api_HostAddress}}/api/ejemplo/0
+
+###
+
+DELETE {{Api_HostAddress}}/api/ejemplo/0
+
+###
+
+PUT {{Api_HostAddress}}/api/ejemplo/0
+Content-Type: application/json
+
+{
+  "nombre": "string",
+  "edad": 0,
+  "email": "string"
+}
 
 ###
