@@ -7,6 +7,7 @@ using TemplateBaseMicroservice.Entities;
 using TemplateBaseMicroservice.Exceptions;
 using TemplateBaseMicroservice.Infraestructure;
 using TemplateBaseMicroservice.Repository;
+using Util;
 
 namespace TemplateBaseMicroservice.Api.Extensions
 {
@@ -87,6 +88,7 @@ namespace TemplateBaseMicroservice.Api.Extensions
         {
             services.AddControllers(options =>
             {
+
                 options.Filters.Add<CustomExceptionFilter>();
             }).
                 ConfigureApiBehaviorOptions(options =>
@@ -120,9 +122,9 @@ namespace TemplateBaseMicroservice.Api.Extensions
                 });
 
         }
-        public static IServiceCollection InyeccionOtrosServicios(this IServiceCollection services)
+        public static IServiceCollection InyeccionOtrosServicios(this IServiceCollection services, IConfiguration Configuration)
         {
-
+            TrackerConfig._configuration = Configuration;
             return services;
         }
     }

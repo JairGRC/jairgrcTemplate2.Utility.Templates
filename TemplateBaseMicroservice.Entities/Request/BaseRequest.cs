@@ -15,7 +15,7 @@ namespace TemplateBaseMicroservice.Entities
     }
     public abstract class BaseRequest
     {
-        public Guid Ticket { get; set; } = Guid.NewGuid();
+        public string Ticket { get; set; } = Guid.NewGuid().ToString();
         public string ClientName { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string ServerName { get; set; } = string.Empty;

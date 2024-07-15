@@ -1,4 +1,6 @@
-﻿namespace TemplateBaseMicroservice.Api.Extensions
+﻿using TemplateBaseMicroservice.Api.Middleware;
+
+namespace TemplateBaseMicroservice.Api.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
@@ -16,6 +18,8 @@
 
             app.UseHttpsRedirection();
             ConfigureSwagger(app, env);
+
+            app.UseMiddleware<RequestBodyMiddleware>();
 
             app.UseCors("MyPolicy");
             app.UseRouting();

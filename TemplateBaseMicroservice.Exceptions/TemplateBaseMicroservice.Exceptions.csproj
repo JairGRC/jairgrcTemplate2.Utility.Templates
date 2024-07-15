@@ -1,7 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TemplateBaseMicroservice.Entities\TemplateBaseMicroservice.Entities.csproj" />
+    <ProjectReference Include="..\Util\Util.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
