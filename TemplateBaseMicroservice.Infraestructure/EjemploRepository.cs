@@ -11,7 +11,6 @@ namespace TemplateBaseMicroservice.Infraestructure
         #region Constructor 
         public EjemploRepository(IConnectionFactory cn) : base(cn)
         {
-
         }
         #endregion
         #region Public Methods
@@ -36,11 +35,6 @@ namespace TemplateBaseMicroservice.Infraestructure
                 { "@ID",id }
             }));
 
-
-        public async Task<bool> Delete(string id)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<EjemploEntity> GetItem(EjemploFilter filter, EjemploFilterItemType filterType)
         {
             EjemploEntity itemfound = null;

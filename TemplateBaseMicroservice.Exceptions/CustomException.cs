@@ -34,7 +34,6 @@ namespace TemplateBaseMicroservice.Exceptions
             ErrorResponse.Warnings = null;
             ErrorResponse.IsSuccess = false;
             ErrorResponse.Ticket = context.HttpContext.TraceIdentifier;
-
             if (context.Exception is CustomException customException)
             {
                 if (customException.EResponse is not null)
@@ -46,12 +45,10 @@ namespace TemplateBaseMicroservice.Exceptions
                     ErrorResponse.LstError.AddRange(customException.LstEResponse);
                 }
                 context.Result = new BadRequestObjectResult(ErrorResponse);
-                context.ExceptionHandled = true;
             }
             else
             {
                 var requestBody = context.HttpContext.Items["RequestBody"]?.ToString();
-
                 string msjException = context.Exception.Message.ToString();
                 var queryParams = context.HttpContext.Request.QueryString.ToString();
                 using (LogContext.PushProperty("Environment", TrackerConfig._configuration["ASPNETCORE_ENVIRONMENT"] ?? "SinEnvironment"))
@@ -62,11 +59,10 @@ namespace TemplateBaseMicroservice.Exceptions
                 {
                     _logger.LogError($"Error en la solicitud : {msjException}");
                 }
-
                 ErrorResponse.LstError.Add(new EResponse() { cDescripcion = "Ocurrio un error, intentarlo mas tarde", Info = "ErrorNoControlado" });
                 context.Result = new ConflictObjectResult(ErrorResponse);
-                context.ExceptionHandled = true;
             }
+            context.ExceptionHandled = true;
             context.ModelState.Clear();
         }
     }
