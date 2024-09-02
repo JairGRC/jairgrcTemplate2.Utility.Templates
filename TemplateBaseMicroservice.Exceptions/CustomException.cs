@@ -50,6 +50,7 @@ namespace TemplateBaseMicroservice.Exceptions
             {
                 var requestBody = context.HttpContext.Items["RequestBody"]?.ToString();
                 string msjException = context.Exception.Message.ToString();
+                string stackTrace = context.Exception.StackTrace.ToString();
                 var queryParams = context.HttpContext.Request.QueryString.ToString();
                 using (LogContext.PushProperty("Environment", TrackerConfig._configuration["ASPNETCORE_ENVIRONMENT"] ?? "SinEnvironment"))
                 using (LogContext.PushProperty("Checked", false))
@@ -57,7 +58,7 @@ namespace TemplateBaseMicroservice.Exceptions
                 using (LogContext.PushProperty("Params", queryParams))
                 using (LogContext.PushProperty("Method", context.HttpContext.Request.Method))
                 {
-                    _logger.LogError($"Error en la solicitud : {msjException}");
+                    _logger.LogError($"Mensaje Error:  {msjException}  -   StackTrace:  {stackTrace}");
                 }
                 ErrorResponse.LstError.Add(new EResponse() { cDescripcion = "Ocurrio un error, intentarlo mas tarde", Info = "ErrorNoControlado" });
                 context.Result = new ConflictObjectResult(ErrorResponse);
