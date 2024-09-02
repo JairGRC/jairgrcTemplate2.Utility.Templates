@@ -1,13 +1,14 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Data.Common;
 using TemplateBaseMicroservice.Repository;
+using Util;
 namespace TemplateBaseMicroservice.Infraestructure
 {
     public class ConnectionFactory : IConnectionFactory
     {
         private readonly string _connectionString;
         private IDbConnection _connection;
-        private readonly object _lock = new object();
         public ConnectionFactory(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
@@ -19,9 +20,10 @@ namespace TemplateBaseMicroservice.Infraestructure
                 "Default" => _connectionString,
                 _ => throw new ArgumentNullException(_connectionString),
             };
-            _connection = new SqlConnection(ccDb);
-            _connection.Open();
-            return _connection;
+            DbProviderFactory dbProvider = DbProviderFactories.GetFactory(TrackerConfig._configuration["ConnectionStrings:databaseProvider"]);
+            DbConnection cn = dbProvider.CreateConnection();
+            cn.ConnectionString = ccDb;
+            return cn;
 
         }
     }

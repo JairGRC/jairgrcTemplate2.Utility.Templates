@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
+using System.Data.Common;
 using System.Reflection;
 using TemplateBaseMicroservice.Entities;
 using TemplateBaseMicroservice.Exceptions;
@@ -15,11 +16,13 @@ namespace TemplateBaseMicroservice.Api.Extensions
     {
         public static IServiceCollection InyeccionDeBD(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddSingleton<IConnectionFactory>(provider => new ConnectionFactory(Configuration.GetConnectionString("cnBD")));
+
+            services.AddScoped<IConnectionFactory>(provider => new ConnectionFactory(Configuration.GetConnectionString("cnBD")));
             return services;
         }
         public static IServiceCollection InyeccionDeDepenciasClases(this IServiceCollection services)
         {
+            DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", Microsoft.Data.SqlClient.SqlClientFactory.Instance);
             var executableLocation = Assembly.GetEntryAssembly().Location;
             var pathAssembly = Path.GetDirectoryName(executableLocation);
             var allTypesDll = Directory.GetFiles(pathAssembly, "TemplateBase*.dll", SearchOption.TopDirectoryOnly)

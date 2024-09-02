@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using TemplateBaseMicroservice.Entities;
 using TemplateBaseMicroservice.Entities.Filter;
 using TemplateBaseMicroservice.Entities.Model;
@@ -62,10 +63,16 @@ namespace TemplateBaseMicroservice.Infraestructure
         #endregion
         #region Private Methods
         private async Task<EjemploEntity?> obtenerEjemploxID(EjemploFilter filter)
-            => (await this.LoadData<EjemploEntity>("ObtenerRegistroPorID", new DynamicParameters(new Dictionary<string, object>
-            {
-                { "@ID", filter.ID}
-            }))).FirstOrDefault() ?? null;
+        {
+            string query = "ObtenerRegistroPorID";
+            var param = new DynamicParameters();
+            param.Add("@ID", filter.ID);
+            return (await this.LoadData<EjemploEntity>(query, param)).FirstOrDefault();
+        }
+        //=> (await this.LoadData<EjemploEntity>("ObtenerRegistroPorID", new DynamicParameters(new Dictionary<string, object>
+        //    {
+        //        { "@ID", filter.ID}
+        //    }))).FirstOrDefault() ?? null;
 
         private async Task<IEnumerable<EjemploEntity>> getByList() =>
             await this.LoadData<EjemploEntity>("ObtenerRegistros", new DynamicParameters());

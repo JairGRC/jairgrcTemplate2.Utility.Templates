@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment-TemplateBaseapi
+  labels:
+    app: trilce-az-TemplateBaseapi
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: trilce-az-TemplateBaseapi
+  template:
+    metadata:
+      labels:
+        app: trilce-az-TemplateBaseapi
+    spec:
+      containers:
+      - name: app-TemplateBaseapi
+        image: {keyImagen}
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+      imagePullSecrets:
+      - name: {key}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-trilce-az-TemplateBaseapi
+spec:
+  type: LoadBalancer
+  selector:
+    app: trilce-az-TemplateBaseapi
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
