@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "jair",
+  "classifications": ["Web", "API"],
+  "identity": "apihex model",
+  "name": "model class hexagonal",
+  "shortName": "apihex",
+  "tags": {
+      "language": "C#",
+      "type": "item"
+  },
+  "primaryOutputs": [
+      { "path": "TemplateBaseMicroservice.Api/Controllers/BaseNameController.cs" },
+      { "path": "TemplateBaseMicroservice.Domain/BaseNameDomain.cs" },
+      { "path": "TemplateBaseMicroservice.Entities/Filter/BaseNameFilter.cs" },
+      { "path": "TemplateBaseMicroservice.Entities/Filter/BaseNameFilterType.cs" },
+      { "path": "TemplateBaseMicroservice.Entities/FilterValidator/BaseNameFilterValidator.cs" },
+      { "path": "TemplateBaseMicroservice.Entities/Model/BaseNameEntity.cs" },
+      { "path": "TemplateBaseMicroservice.Entities/Response/BaseNameResponse.cs" },
+      { "path": "TemplateBaseMicroservice.Exceptions/BaseNameHeaderException.cs" },
+      { "path": "TemplateBaseMicroservice.Infraestructure/BaseNameRepository.cs" },
+      { "path": "TemplateBaseMicroservice.Repository/IBaseNameRepository.cs" }
+  ],
+  "symbols": {
+      "TemplateBase": {
+          "type": "parameter",
+          "datatype": "string",
+          "replaces": "TemplateBase",
+          "fileRename": "TemplateBase",
+          "defaultValue": "TemplateBase"
+      },
+      "BaseName": {
+          "type": "parameter",
+          "datatype": "string",
+          "replaces": "BaseName",
+          "fileRename": "BaseName",
+          "defaultValue": "BaseName"
+      }
+  }
+}
