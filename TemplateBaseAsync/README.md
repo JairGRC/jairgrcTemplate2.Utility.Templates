@@ -1,16 +1,22 @@
 # Plantilla arquitectura hexagonal web api
 
-[jairgrcTemplate2.Utility.Templates](https://www.nuget.org/packages/jairgrcTemplate2.Utility.Templates/1.2.3)
-
+[jairgrcTemplate2.Utility.Templates](https://www.nuget.org/packages/jairgrcTemplate2.Utility.Templates)
 
 
 ## Install the template
 
 ```
-dotnet new install jairgrcTemplate2.Utility.Templates::1.2.7
+dotnet new install jairgrcTemplate2.Utility.Templates::1.3.2
 dotnet new JGRCV2 -o <tagPlantilla>
 ```
-
+## Command to generate classes  
+```
+dotnet new apihex -T <tagPlantilla> -B <FileName>
+```
+## Command to check class generator parameters
+```
+dotnet new apihex -?
+```
 ### Project structure
 ```
     └── TemplateBase.sln
